@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
+    "mqtt": "^2.0.0",
     "request": "^2.74.0"
   },
   "scripts": {
