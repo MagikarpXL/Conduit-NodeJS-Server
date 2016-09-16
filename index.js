@@ -1,4 +1,10 @@
+//npm install --save-dev _PACKAGE_
 var request = require('request');
+var mqtt = require('mqtt');
+
+//mqtt settings
+var url = "mqtt://127.0.0.1";
+var client = mqtt.connect(url);
 
 client.on('connect', function() {
     console.log("connected, subscribing");
