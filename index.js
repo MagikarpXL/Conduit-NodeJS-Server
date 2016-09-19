@@ -2,17 +2,23 @@
 var request = require('request');
 var mqtt = require('mqtt');
 
-//mqtt settings
+//MQTT settings
 var url = "mqtt://127.0.0.1";
 var client = mqtt.connect(url);
 
-client.on('connect', function() {
+client.on('connect', function () {
     console.log("connected, subscribing");
 
-    // subscribe to all upstream lora packets
+    //Get all the LoRaWAN packets that are send over MQTT
     client.subscribe('lora/+/up');
 });
 
+/*
+topic = euid of the LoRaWAN device
+message = the MQTT message that's send by the LoRaWAN device
+
+This function reacts when the Gateway receives a MQTT message. It then parses the messages to JSON objects.
+*/
 client.on('message', function (topic, message) {
     console.log("topic: ", topic);
     console.log("message: ", message.toString());
@@ -34,7 +40,7 @@ client.on('message', function (topic, message) {
     console.log("data: ", data.toString());
 });
 
-client.on("error", function(error) {
+client.on("error", function (error) {
     console.log("mqtt error: ", error);
     exit();
 });
