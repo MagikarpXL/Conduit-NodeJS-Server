@@ -46,6 +46,11 @@ client.on('message', function (topic, message) {
 function submit(eui, data){
     request.post(
 	'https://delta-api.fourfusion.nl/test/'+eui,
+    {
+      "json": {
+        "data": data
+        }
+    },
 	function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			console.log(body)
