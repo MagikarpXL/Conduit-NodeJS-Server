@@ -6,7 +6,8 @@
   "dependencies": {},
   "devDependencies": {
     "mqtt": "^2.0.0",
-    "request": "^2.74.0"
+    "request": "^2.74.0",
+    "semistandard": "^9.1.0"
   },
   "scripts": {
     "test": "make test"
