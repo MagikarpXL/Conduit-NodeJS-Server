@@ -1,10 +1,11 @@
 {
   "name": "conduit-nodejs-server",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A NodeJS server that handles LoRaWAN communication by sending it to another API on the internet.",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
+    "jsdoc": "^3.4.2",
     "mqtt": "^2.0.0",
     "request": "^2.74.0",
     "semistandard": "^9.1.0"
