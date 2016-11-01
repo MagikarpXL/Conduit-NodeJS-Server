@@ -7,6 +7,7 @@
   "devDependencies": {
     "jsdoc": "^3.4.2",
     "mqtt": "^2.0.0",
+    "nodemailer": "^2.6.4",
     "request": "^2.74.0",
     "semistandard": "^9.1.0"
   },

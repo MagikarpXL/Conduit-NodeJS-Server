@@ -1,6 +1,7 @@
 'use strict';
 var request = require('request');
 var mqtt = require('mqtt');
+var nodemailer = require('nodemailer');
 
 // MQTT settings
 var url = 'mqtt://127.0.0.1';
@@ -9,13 +10,34 @@ var client = mqtt.connect(url);
 // POST request settings
 var api = 'https://delta-api.fourfusion.nl/';
 
-/**
- * Connects to all public LoRaWAN transmitters through MQTT.
- */
+// Mail settings
+var mailSenderName = 'Delta LoRaWAN';
+var mailSenderAddress = 'deltamailer1337@gmail.com';
+// Seperate the receivers with a comma
+var mailReceivers = 'wege0014@hz.nl, splu0008@hz.nl';
+// Enter the hardcoded credentials for your mail account, don't forget to replace your '@' by '%40'
+// Example: nodemailer.createTransport('smtps://_MAILADRES_%40_MAILPROVIDER:_PASSWORD_@_MAILSERVER');
+var transporter = nodemailer.createTransport('smtps://deltamailer1337%40gmail.com:spo2mailer@smtp.gmail.com');
+
+// Connects to all public LoRaWAN transmitters through MQTT.
 client.on('connect', function () {
-  // If you see 'connected, subscribing' in your terminal, this indicates that the app has started.
+  // If you see 'connected, subscribing' in your terminal, this indicates that the app has started. This could take some time.
   console.log('connected, subscribing');
   client.subscribe('lora/+/up');
+  mail('Conduit Gateway (re)started', 'The Conduit gateway was (re)started, maybe something went wrong, but errors are send in a seperate mail.');
+});
+
+client.on('message', function (topic, message) {
+  parseMessage(topic, message);
+});
+
+/**
+ * If an error occurs, the application currently quits. This should be a development only thing.
+ */
+client.on('error', function (error) {
+  console.log('mqtt error: ', error);
+  mail('Multitech Conduit crashed', error);
+  process.exit();
 });
 
 /**
@@ -24,7 +46,7 @@ client.on('connect', function () {
  * @param {string} topic - The euid of the LoRaWAN device.
  * @param {string} message - The MQTT message that's broadcasted by the LoRaWAN transmitter.
  */
-client.on('message', function (topic, message) {
+function parseMessage (topic, message) {
   var eui = topic.split('/')[1];
   var json = JSON.parse(message.toString());
 
@@ -42,7 +64,7 @@ client.on('message', function (topic, message) {
   console.log('eui: ', eui);
   console.log('data: ', data);
   submit(eui, data);
-});
+}
 
 /**
  * Submits the data to an API
@@ -56,7 +78,7 @@ function submit (eui, data) {
     method: 'POST',
     json: true,
     headers: {
-      'content-type': 'applications/json'
+      'content-type': 'application/json'
     },
     body: {
       // THE sensor_id IS CURRENTLY HARDCODED BECAUSE MISTAKES WERE MADE.
@@ -73,9 +95,22 @@ function submit (eui, data) {
 }
 
 /**
- * If an error occurs, the application currently quits. This should be a development only thing.
+ * Sends an e-mail
+ * @function
+ * @param {array} mailOptions - Where to send the e-mail, and other settings.
  */
-client.on('error', function (error) {
-  console.log('mqtt error: ', error);
-  process.exit();
-});
+function mail (subject, data) {
+  transporter.sendMail({
+    from: '"' + mailSenderName + '" <' + mailSenderAddress + '>',
+    to: mailReceivers,
+    subject: subject,
+    text: data
+  }, function (error, info) {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: ' + info.response);
+  });
+}
+
+// 82.176.177.68
