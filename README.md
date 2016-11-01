@@ -6,7 +6,16 @@ A NodeJS server that handles LoRaWAN communication by sending it to another API 
 It's using the semistandard code convention, https://github.com/Flet/semistandard;
 Before a commit, please make sure semistandard doesn't give back any errors. If you made a commit to the master branch, please run JSDoc to keep the documentation updated.
 
-upload.sh is a bash script that deploys index.js to the gateway
+upload.sh is a bash script that deploys index.js to the gateway, please see the documenation inside the script itself
+
+To start the project (it's only usable on the gateway), run
+
+```sh
+npm install 
+node index.js
+```
+
+npm install is only needed the first time, or if you added a new dependency. Otherwise you could just run node index.js
 
 How to use semistandard:
 
