@@ -30,17 +30,15 @@ client.on('connect', function () {
 client.on('message', function (topic, message) {
   console.log('\n message received \n');
   console.log(
-    'client on message: ', 
+    'client on message: ',
     JSON.parse(message.toString())
   );
   console.log(
     'client on message (topic): ',
     topic.split('/')
   );
-  
+  parseMessage(topic, message);
 });
-
-client.on('message', parseMessage)
 
 /**
  * If an error occurs, the application currently quits. This should be a development only thing.
@@ -59,7 +57,7 @@ client.on('error', function (error) {
  */
 function parseMessage (topic, message) {
   var eui = topic.split('/')[1];
-  var messageData = JSON.parse(message.toString())
+  var messageData = JSON.parse(message.toString());
 
   // Optional objects that you could use in your application.
   /* freq = messageData.freq;
@@ -69,9 +67,9 @@ function parseMessage (topic, message) {
   sequence_number = messageData.seqn;
   timestamp = messageData.timestamp; */
 
-  submit(eui, base64_decode(messageData.data));
+  submit(eui, base64Decode(messageData.data));
 }
-  
+
 /**
  * Submits the data to an API
  * @function
@@ -125,7 +123,7 @@ function mail (subject, data) {
  * @function
  * @param {string} string - base64 string to decode.
  */
-function base64_decode(string) {
+function base64Decode (string) {
   return new Buffer(string, 'base64').toString();
 }
 
