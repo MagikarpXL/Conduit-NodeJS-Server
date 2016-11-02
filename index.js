@@ -28,8 +28,19 @@ client.on('connect', function () {
 });
 
 client.on('message', function (topic, message) {
-  parseMessage(topic, message);
+  console.log('\n message received \n');
+  console.log(
+    'client on message: ', 
+    JSON.parse(message.toString())
+  );
+  console.log(
+    'client on message (topic): ',
+    topic.split('/')
+  );
+  
 });
+
+client.on('message', parseMessage)
 
 /**
  * If an error occurs, the application currently quits. This should be a development only thing.
@@ -48,24 +59,19 @@ client.on('error', function (error) {
  */
 function parseMessage (topic, message) {
   var eui = topic.split('/')[1];
-  var json = JSON.parse(message.toString());
+  var messageData = JSON.parse(message.toString())
 
   // Optional objects that you could use in your application.
-  /* freq = json.freq;
-  datarate = json.datr;
-  snr = json.lsnr;
-  rssi = json.rssi;
-  sequence_number = json.seqn;
-  timestamp = json.timestamp; */
+  /* freq = messageData.freq;
+  datarate = messageData.datr;
+  snr = messageData.lsnr;
+  rssi = messageData.rssi;
+  sequence_number = messageData.seqn;
+  timestamp = messageData.timestamp; */
 
-  // decode base64 payload
-  var data = new Buffer(json.data, 'base64');
-  data = data.toString();
-  console.log('eui: ', eui);
-  console.log('data: ', data);
-  submit(eui, data);
+  submit(eui, base64_decode(messageData.data));
 }
-
+  
 /**
  * Submits the data to an API
  * @function
@@ -97,7 +103,8 @@ function submit (eui, data) {
 /**
  * Sends an e-mail
  * @function
- * @param {array} mailOptions - Where to send the e-mail, and other settings.
+ * @param {string} subject - Where to send the e-mail.
+ * @param {string} data - What text to send in the e-mail.
  */
 function mail (subject, data) {
   transporter.sendMail({
@@ -111,6 +118,15 @@ function mail (subject, data) {
     }
     console.log('Message sent: ' + info.response);
   });
+}
+
+/**
+ * Decodes base64 to a string
+ * @function
+ * @param {string} string - base64 string to decode.
+ */
+function base64_decode(string) {
+  return new Buffer(string, 'base64').toString();
 }
 
 // 82.176.177.68
