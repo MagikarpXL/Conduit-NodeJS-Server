@@ -13,11 +13,12 @@ var api = 'https://delta-api.fourfusion.nl/';
 // Mail settings
 var mailSenderName = 'Delta LoRaWAN';
 var mailSenderAddress = 'deltamailer1337@gmail.com';
-// Seperate the receivers with a comma
-var mailReceivers = 'wege0014@hz.nl, splu0008@hz.nl';
+// Seperate the receivers with a comma, like "foo@bar.nl, bar@foo.nl
+var mailReceivers = 'nicememe@hz.nl';
 // Enter the hardcoded credentials for your mail account, don't forget to replace your '@' by '%40'
 // Example: nodemailer.createTransport('smtps://_MAILADRES_%40_MAILPROVIDER:_PASSWORD_@_MAILSERVER');
-var transporter = nodemailer.createTransport('smtps://deltamailer1337%40gmail.com:spo2mailer@smtp.gmail.com');
+// Ask someone at Delta for the password
+var transporter = nodemailer.createTransport('smtps://deltamailer1337%40gmail.com:PASSWORD@smtp.gmail.com');
 
 // Connects to all public LoRaWAN transmitters through MQTT.
 client.on('connect', function () {
